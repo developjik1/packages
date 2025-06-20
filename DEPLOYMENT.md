@@ -4,19 +4,34 @@
 
 GitHub Actions에서 패키지를 자동 배포하려면 GitHub Secrets에 NPM_TOKEN을 설정해야 합니다.
 
-### 1. GitHub 저장소 설정
+### 1. GitHub Personal Access Token 생성
+
+먼저 GitHub에서 Personal Access Token을 생성해야 합니다:
+
+1. GitHub → **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)**
+2. **Generate new token (classic)** 클릭
+3. 토큰 설정:
+   - **Note**: `packages-deployment` (또는 원하는 이름)
+   - **Expiration**: `No expiration` (권장) 또는 적절한 기간
+   - **Select scopes**:
+     - ✅ `write:packages` (패키지 배포용)
+     - ✅ `read:packages` (패키지 읽기용)
+     - ✅ `repo` (저장소 액세스용, private 저장소인 경우 필수)
+4. **Generate token** 클릭
+5. 생성된 토큰을 복사 (한 번만 표시됨)
+
+### 2. GitHub 저장소 Secret 설정
 
 1. GitHub 저장소 페이지로 이동
 2. **Settings** 탭 클릭
 3. 왼쪽 사이드바에서 **Secrets and variables** > **Actions** 클릭
-
-### 2. NPM_TOKEN Secret 추가
-
-1. **New repository secret** 버튼 클릭
-2. Secret 정보 입력:
+4. **New repository secret** 버튼 클릭
+5. Secret 정보 입력:
    - **Name**: `NPM_TOKEN`
-   - **Secret**: `your_github_personal_access_token_here`
-3. **Add secret** 버튼 클릭
+   - **Secret**: `위에서 생성한_github_personal_access_token`
+6. **Add secret** 버튼 클릭
+
+⚠️ **중요**: NPM_TOKEN은 GitHub Personal Access Token이어야 하며, 일반 npm 토큰이 아닙니다.
 
 ### 3. GitHub Pages 설정
 
@@ -148,19 +163,22 @@ npm install @developjik1/icons @developjik1/ui
 
 ## 문제 해결
 
-### 토큰 권한 확인
-GitHub 토큰에 다음 권한이 있는지 확인하세요:
-- `write:packages`
-- `read:packages`
-- `repo` (private 저장소인 경우)
+### NPM_TOKEN 확인
+1. GitHub Personal Access Token이 올바르게 생성되었는지 확인
+2. 토큰에 다음 권한이 포함되어 있는지 확인:
+   - `write:packages`
+   - `read:packages`
+   - `repo` (private 저장소인 경우)
+3. GitHub Secret에 NPM_TOKEN이 올바르게 설정되었는지 확인
 
 ### GitHub Pages 403 에러
 - Repository Settings → Pages에서 "GitHub Actions" 소스가 선택되었는지 확인
 - Workflow 권한이 올바르게 설정되었는지 확인
 
-### 403 에러
-- NPM_TOKEN이 올바르게 설정되었는지 확인
+### 401 Unauthorized 에러
+- NPM_TOKEN이 올바른 GitHub Personal Access Token인지 확인
 - .npmrc 파일에 올바른 레지스트리가 설정되었는지 확인
+- 토큰 권한이 충분한지 확인
 
 ### 빌드 실패
 - 모든 테스트가 통과하는지 확인
