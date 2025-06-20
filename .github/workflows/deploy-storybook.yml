@@ -1,18 +1,16 @@
 name: Deploy Storybook
 
 on:
-  # changeset이 태그를 생성할 때마다 실행
+  # changeset이 태그를 생성할 때마다 실행하거나 main 브랜치의 icons 변경사항에 반응
   push:
     tags:
       - '*@*'
-  # 수동 실행도 가능하도록
-  workflow_dispatch:
-  # main 브랜치 push 시에도 실행 (테스트용)
-  push:
     branches:
       - main
     paths:
       - 'packages/icons/**'
+  # 수동 실행도 가능하도록
+  workflow_dispatch:
 
 permissions:
   contents: read
