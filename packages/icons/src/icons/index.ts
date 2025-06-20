@@ -1,0 +1,15 @@
+export { Add } from './Add';
+export { AddCircle } from './AddCircle';
+export { AddCircleFilled } from './AddCircleFilled';
+export { Apartment } from './Apartment';
+export { Bell } from './Bell';
+export { Heart } from './Heart';
+export { Star } from './Star';
+export { ChevronDown } from './ChevronDown';
+export { Home } from './Home';
+export { Icon } from './Icon';
+export { Menu } from './Menu';
+export { Plus } from './Plus';
+export { Search } from './Search';
+export { User } from './User';
+export { X } from './X'; 
