@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "prepublish": "npm run clean && npm run build",
     "generate": "node scripts/generate-icons.js",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "storybook": "storybook dev -p 6006",

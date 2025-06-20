@@ -15,6 +15,10 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "src/**", "test/**", "tests/**", "__tests__/**", "*.test.*", "*.spec.*"]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },
