@@ -1,4 +1,5 @@
 // Auto-generated from heart.svg
+import React from 'react';
 import { Icon } from './Icon';
 import { IconComponent } from '../types';
 
