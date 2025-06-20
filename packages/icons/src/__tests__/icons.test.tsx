@@ -1,6 +1,20 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { Home, Heart, Search, User, Star } from '../icons';
+import { render } from '@testing-library/react';
+import { 
+  Home, 
+  Heart, 
+  Search, 
+  User, 
+  Star, 
+  Bell,
+  Menu,
+  Plus,
+  X,
+  ChevronDown,
+  Apartment,
+  Add,
+  AddCircle,
+  AddCircleFilled
+} from '../icons';
 
 describe('Icon Components', () => {
   const testIcons = [
@@ -9,6 +23,15 @@ describe('Icon Components', () => {
     { Component: Search, name: 'Search' },
     { Component: User, name: 'User' },
     { Component: Star, name: 'Star' },
+    { Component: Bell, name: 'Bell' },
+    { Component: Menu, name: 'Menu' },
+    { Component: Plus, name: 'Plus' },
+    { Component: X, name: 'X' },
+    { Component: ChevronDown, name: 'ChevronDown' },
+    { Component: Apartment, name: 'Apartment' },
+    { Component: Add, name: 'Add' },
+    { Component: AddCircle, name: 'AddCircle' },
+    { Component: AddCircleFilled, name: 'AddCircleFilled' },
   ];
 
   testIcons.forEach(({ Component, name }) => {

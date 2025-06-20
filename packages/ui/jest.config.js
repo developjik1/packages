@@ -17,6 +17,8 @@ module.exports = {
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
     '!src/setupTests.ts',
+    '!src/**/*.stories.{ts,tsx}',
+    '!src/stories/**/*'
   ],
   coverageReporters: ['text', 'lcov', 'html'],
   extensionsToTreatAsEsm: ['.ts', '.tsx'],

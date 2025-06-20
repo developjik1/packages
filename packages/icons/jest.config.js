@@ -13,7 +13,10 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
     '!src/**/*.d.ts',
-    '!src/**/index.ts'
+    '!src/**/index.ts',
+    '!src/**/*.stories.{ts,tsx}',
+    '!src/stories/**/*',
+    '!src/setupTests.ts'
   ],
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {

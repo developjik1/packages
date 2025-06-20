@@ -1,29 +1,24 @@
-name: Deploy Storybook
+# UI 패키지 스토리북 배포 (현재 비활성화 - 준비되면 활성화)
+name: Deploy UI Storybook
 
 on:
-  # changeset이 태그를 생성할 때마다 실행하거나 main 브랜치의 icons 변경사항에 반응
-  push:
-    tags:
-      - '*@*'
-    branches:
-      - main
-    paths:
-      - 'packages/icons/**'
-  # 수동 실행도 가능하도록
-  workflow_dispatch:
+  # 현재는 비활성화, 추후 UI 스토리북 준비되면 활성화
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'packages/ui/**'
+  workflow_dispatch: # 수동 실행만 가능
 
-# 권한 설정
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# 동시 실행 제한
 concurrency:
-  group: 'pages'
+  group: 'pages-ui'
   cancel-in-progress: false
 
-# 빌드 및 배포 작업
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -41,25 +36,25 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Build icons package
-        run: pnpm --filter @developjik1/icons build
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Build UI package
+        run: pnpm --filter @developjik1/ui build
 
-      - name: Build Storybook
-        run: pnpm --filter @developjik1/icons build-storybook
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # UI 패키지에 스토리북이 준비되면 아래 주석 해제
+      # - name: Build UI Storybook
+      #   run: pnpm --filter @developjik1/ui build-storybook
 
       - name: Create directory structure
         run: |
+          mkdir -p ./dist/ui
+          echo "UI Storybook 준비중..." > ./dist/ui/index.html
+          
+          # 기존 icons 스토리북도 포함
           mkdir -p ./dist/icons
-          cp -r ./packages/icons/storybook-static/* ./dist/icons/
+          cd packages/icons && npm run build-storybook
+          cp -r ./storybook-static/* ../../dist/icons/
 
-      - name: Create main landing page
+      - name: Create updated landing page
         run: |
           cat > ./dist/index.html << 'EOF'
           <!DOCTYPE html>
@@ -79,6 +74,7 @@ jobs:
               .package-desc { color: #666; margin-bottom: 16px; }
               .package-link { display: inline-block; padding: 8px 16px; background: #ff4785; color: white; text-decoration: none; border-radius: 4px; }
               .package-link:hover { background: #e7427d; }
+              .coming-soon { background: #ccc !important; }
             </style>
           </head>
           <body>
@@ -95,14 +91,14 @@ jobs:
                 
                 <div class="package-card">
                   <div class="package-title">🧩 UI Components</div>
-                  <div class="package-desc">재사용 가능한 UI 컴포넌트 (준비중)</div>
-                  <a href="#" class="package-link" style="background: #ccc;">Coming Soon</a>
+                  <div class="package-desc">재사용 가능한 UI 컴포넌트 라이브러리</div>
+                  <a href="./ui/" class="package-link coming-soon">준비중</a>
                 </div>
                 
                 <div class="package-card">
                   <div class="package-title">📚 Design System</div>
-                  <div class="package-desc">통합 디자인 시스템 가이드 (준비중)</div>
-                  <a href="#" class="package-link" style="background: #ccc;">Coming Soon</a>
+                  <div class="package-desc">통합 디자인 시스템 가이드</div>
+                  <a href="#" class="package-link coming-soon">Coming Soon</a>
                 </div>
               </div>
             </div>

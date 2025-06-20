@@ -28,6 +28,9 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://npm.pkg.github.com'
+          scope: '@developjik1'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -56,19 +59,27 @@ jobs:
 
       - name: Setup .npmrc for publishing
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> ~/.npmrc
           echo "@developjik1:registry=https://npm.pkg.github.com" >> ~/.npmrc
+          echo "Debug: .npmrc content:"
+          cat ~/.npmrc
         
+      - name: Debug NPM authentication
+        run: |
+          echo "Debug: Testing npm whoami"
+          npm whoami --registry=https://npm.pkg.github.com || echo "npm whoami failed"
+          echo "Debug: NODE_AUTH_TOKEN is set: ${{ secrets.GITHUB_TOKEN != '' }}"
+
       - name: Create Release Pull Request or Publish to GitHub Packages
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm changeset publish
+          publish: npx changeset publish
           title: "Release: New Versions"
           commit: "chore: release new versions"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Storybook for Icons
         if: steps.changesets.outputs.published == 'true'
@@ -76,11 +87,67 @@ jobs:
           cd packages/icons
           npm run build-storybook
 
+      - name: Prepare deployment structure
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          mkdir -p ./dist/icons
+          cp -r ./packages/icons/storybook-static/* ./dist/icons/
+          
+          # Create main landing page
+          cat > ./dist/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="ko">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>@developjik1 Packages - Storybook</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 40px; background: #f8f9fa; }
+              .container { max-width: 800px; margin: 0 auto; }
+              h1 { color: #333; margin-bottom: 30px; }
+              .package-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+              .package-card { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s; }
+              .package-card:hover { transform: translateY(-2px); }
+              .package-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+              .package-desc { color: #666; margin-bottom: 16px; }
+              .package-link { display: inline-block; padding: 8px 16px; background: #ff4785; color: white; text-decoration: none; border-radius: 4px; }
+              .package-link:hover { background: #e7427d; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>@developjik1 패키지 스토리북</h1>
+              <p>개발, 디자인, 기획팀을 위한 컴포넌트 라이브러리 문서화</p>
+              
+              <div class="package-grid">
+                <div class="package-card">
+                  <div class="package-title">🎨 Icons</div>
+                  <div class="package-desc">SVG 아이콘 라이브러리 - 15개의 고품질 아이콘</div>
+                  <a href="./icons/" class="package-link">Storybook 보기</a>
+                </div>
+                
+                <div class="package-card">
+                  <div class="package-title">🧩 UI Components</div>
+                  <div class="package-desc">재사용 가능한 UI 컴포넌트 (준비중)</div>
+                  <a href="#" class="package-link" style="background: #ccc;">Coming Soon</a>
+                </div>
+                
+                <div class="package-card">
+                  <div class="package-title">📚 Design System</div>
+                  <div class="package-desc">통합 디자인 시스템 가이드 (준비중)</div>
+                  <a href="#" class="package-link" style="background: #ccc;">Coming Soon</a>
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+          EOF
+
       - name: Deploy Storybook to GitHub Pages
         if: steps.changesets.outputs.published == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./packages/icons/storybook-static
-          destination_dir: storybook
+          publish_dir: ./dist
+          destination_dir: .
           cname: # 커스텀 도메인이 있다면 여기에 추가 
