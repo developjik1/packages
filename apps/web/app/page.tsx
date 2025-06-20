@@ -1,3 +1,5 @@
+"use client";
+
 import Image, { type ImageProps } from "next/image";
 import { Button } from "@developjik1/ui";
 import styles from "./page.module.css";

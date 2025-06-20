@@ -10,6 +10,7 @@ interface ButtonProps {
   appName: string;
   variant?: "primary" | "secondary";
   size?: "sm" | "md" | "lg";
+  onClick?: () => void;
 }
 
 export const Button = ({ 
@@ -18,7 +19,8 @@ export const Button = ({
   style,
   appName, 
   variant = "primary",
-  size = "md"
+  size = "md",
+  onClick
 }: ButtonProps) => {
   const baseStyles: CSSProperties = {
     borderRadius: "var(--ui-button-radius, 0.375rem)",
@@ -55,6 +57,14 @@ export const Button = ({
     },
   };
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      alert(`Hello from your ${appName} app!`);
+    }
+  };
+
   return (
     <button
       className={clsx("ui-button", `ui-button--${variant}`, `ui-button--${size}`, className)}
@@ -64,7 +74,7 @@ export const Button = ({
         ...variantStyles[variant],
         ...style,
       }}
-      onClick={() => alert(`Hello from your ${appName} app!`)}
+      onClick={handleClick}
     >
       {children}
     </button>
