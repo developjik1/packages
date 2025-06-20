@@ -1,84 +1,140 @@
-# Turborepo starter
+# @developjik1 Packages
 
-This Turborepo starter is maintained by the Turborepo core team.
+모던 React 애플리케이션을 위한 UI 컴포넌트와 아이콘 라이브러리 모노레포입니다.
 
-## Using this example
+## 📦 패키지
 
-Run the following command:
+- **[@developjik1/ui](./packages/ui)** - React UI 컴포넌트 라이브러리
+- **[@developjik1/icons](./packages/icons)** - SVG 아이콘 컴포넌트 라이브러리
 
-```sh
-npx create-turbo@latest
+## 🚀 빠른 시작
+
+### 설치
+
+```bash
+# NPM 레지스트리 설정
+echo "@developjik1:registry=https://npm.pkg.github.com" >> ~/.npmrc
+
+# 패키지 설치
+npm install @developjik1/ui @developjik1/icons
 ```
 
-## What's inside?
+### 사용법
 
-This Turborepo includes the following packages/apps:
+```tsx
+import { Button, Card } from '@developjik1/ui'
+import { Home, Heart, Search } from '@developjik1/icons'
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+function App() {
+  return (
+    <Card>
+      <Button variant="primary" size="lg">
+        <Home size={20} />
+        홈으로 가기
+      </Button>
+    </Card>
+  )
+}
 ```
 
-### Develop
+## 🛠 개발 환경 설정
 
-To develop all apps and packages, run the following command:
+```bash
+# 저장소 클론
+git clone https://github.com/developjik1/packages.git
+cd packages
 
-```
-cd my-turborepo
+# 의존성 설치
+pnpm install
+
+# 개발 서버 시작
 pnpm dev
+
+# 빌드
+pnpm build
+
+# 테스트
+pnpm test
 ```
 
-### Remote Caching
+## 📋 개발 워크플로우
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+### Changeset을 사용한 버전 관리
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+이 프로젝트는 [Changesets](https://github.com/changesets/changesets)을 사용하여 버전 관리와 배포를 자동화합니다.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+#### 1. 변경사항 기록
 
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
+```bash
+# 새로운 changeset 생성
+pnpm changeset
 ```
 
-## Useful Links
+#### 2. 버전 업데이트
 
-Learn more about the power of Turborepo:
+```bash
+# package.json 버전과 CHANGELOG 업데이트
+pnpm version-packages
+```
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+#### 3. 자동 배포
+
+- `gitbutler/workspace` 브랜치에 커밋을 push하면 GitHub Actions가 자동으로:
+  - 테스트 실행
+  - 패키지 빌드
+  - changeset이 있으면 Version PR 생성
+  - Version PR이 머지되면 GitHub Packages에 배포
+
+### 수동 배포
+
+```bash
+# 로컬에서 수동 배포 (NPM_TOKEN 환경변수 필요)
+export NPM_TOKEN=your_github_token
+pnpm release
+```
+
+## 🏗 아키텍처
+
+```
+packages/
+├── apps/
+│   ├── docs/          # 문서 사이트 (Next.js)
+│   └── web/           # 데모 앱 (Next.js)
+├── packages/
+│   ├── ui/            # UI 컴포넌트
+│   ├── icons/         # 아이콘 컴포넌트
+│   ├── eslint-config/ # ESLint 설정
+│   └── typescript-config/ # TypeScript 설정
+└── .changeset/        # 버전 관리
+```
+
+## 🧪 테스트
+
+```bash
+# 모든 패키지 테스트
+pnpm test
+
+# 특정 패키지 테스트
+pnpm --filter @developjik1/icons test
+
+# 테스트 커버리지
+pnpm test:coverage
+```
+
+## 📖 문서
+
+- [UI 컴포넌트 가이드](./packages/ui/README.md)
+- [아이콘 라이브러리 가이드](./packages/icons/README.md)
+- [배포 설정 가이드](./DEPLOYMENT.md)
+
+## 🔧 도구
+
+- **빌드**: [Turborepo](https://turbo.build/repo)
+- **패키지 관리**: [pnpm](https://pnpm.io/)
+- **버전 관리**: [Changesets](https://github.com/changesets/changesets)
+- **CI/CD**: GitHub Actions
+- **레지스트리**: GitHub Packages
+
+## 📄 라이선스
+
+MIT License

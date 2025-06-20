@@ -1,0 +1,62 @@
+name: Deploy Storybook
+
+on:
+  # changeset이 태그를 생성할 때마다 실행
+  push:
+    tags:
+      - '*@*'
+  # 수동 실행도 가능하도록
+  workflow_dispatch:
+  # main 브랜치 push 시에도 실행 (테스트용)
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/icons/**'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build icons package
+        run: pnpm --filter @developjik1/icons build
+
+      - name: Build Storybook
+        run: pnpm --filter @developjik1/icons build-storybook
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./packages/icons/storybook-static
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
