@@ -12,6 +12,66 @@ function toPascalCase(str) {
     .replace(/^(.)/, char => char.toUpperCase());
 }
 
+// HTML 속성을 JSX 속성으로 변환
+function htmlAttrToJsx(content) {
+  return content
+    // HTML 주석을 JSX 주석으로 변환
+    .replace(/<!--([\s\S]*?)-->/g, '{/* $1 */}')
+    // CSS 속성들을 camelCase로 변환
+    .replace(/\sstop-color=/g, ' stopColor=')
+    .replace(/\sclass=/g, ' className=')
+    .replace(/\sdata-name=/g, ' data-name=') // data-* 속성은 그대로 유지
+    // stroke-* 속성들
+    .replace(/\sstroke-width=/g, ' strokeWidth=')
+    .replace(/\sstroke-linecap=/g, ' strokeLinecap=')
+    .replace(/\sstroke-linejoin=/g, ' strokeLinejoin=')
+    .replace(/\sstroke-dasharray=/g, ' strokeDasharray=')
+    .replace(/\sstroke-dashoffset=/g, ' strokeDashoffset=')
+    // fill-* 속성들
+    .replace(/\sfill-rule=/g, ' fillRule=')
+    .replace(/\sfill-opacity=/g, ' fillOpacity=')
+    // clip-* 속성들
+    .replace(/\sclip-path=/g, ' clipPath=')
+    .replace(/\sclip-rule=/g, ' clipRule=');
+}
+
+// CSS 스타일을 JSX 스타일로 변환
+function processCssStyles(content, componentName) {
+  // CSS 스타일 블록을 찾고 JSX 형태로 변환
+  const styleMatch = content.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+  if (styleMatch) {
+    const cssContent = styleMatch[1].trim();
+    // CSS를 템플릿 리터럴로 감싸기
+    const jsxStyle = `<style>
+          {\`${cssContent}\`}
+        </style>`;
+    content = content.replace(styleMatch[0], jsxStyle);
+  }
+
+  // ID 충돌 방지를 위해 그라디언트 ID를 컴포넌트별로 고유하게 만들기
+  const gradientIdRegex = /id="([^"]+)"/g;
+  let match;
+  const replacements = new Map();
+  
+  while ((match = gradientIdRegex.exec(content)) !== null) {
+    const originalId = match[1];
+    if (!originalId.includes(componentName.toLowerCase())) {
+      const newId = `${componentName.toLowerCase()}-${originalId}`;
+      replacements.set(originalId, newId);
+    }
+  }
+
+  // ID 교체 적용
+  replacements.forEach((newId, originalId) => {
+    // id 속성 교체
+    content = content.replace(new RegExp(`id="${originalId}"`, 'g'), `id="${newId}"`);
+    // url() 참조 교체
+    content = content.replace(new RegExp(`url\\(#${originalId}\\)`, 'g'), `url(#${newId})`);
+  });
+
+  return content;
+}
+
 // SVG 내용을 React 컴포넌트로 변환하는 함수
 function svgToReactComponent(svgContent, componentName) {
   // SVG 태그를 제거하고 내부 요소만 추출
@@ -20,15 +80,24 @@ function svgToReactComponent(svgContent, componentName) {
     throw new Error('Invalid SVG content');
   }
 
-  const innerContent = svgMatch[1].trim();
+  let innerContent = svgMatch[1].trim();
+  
+  // viewBox 추출 (복잡한 SVG의 경우 필요)
+  const viewBoxMatch = svgContent.match(/viewBox="([^"]+)"/);
+  const viewBoxProp = viewBoxMatch ? ` viewBox="${viewBoxMatch[1]}"` : '';
 
-  return `import React from 'react';
-import { Icon } from './Icon';
+  // HTML 속성을 JSX로 변환
+  innerContent = htmlAttrToJsx(innerContent);
+  
+  // CSS 스타일 처리 및 ID 충돌 방지
+  innerContent = processCssStyles(innerContent, componentName);
+
+  return `import { Icon } from './Icon';
 import { IconComponent } from '../types';
 
 export const ${componentName}: IconComponent = (props) => {
   return (
-    <Icon {...props}>
+    <Icon {...props}${viewBoxProp}>
       ${innerContent}
     </Icon>
   );
