@@ -1,6 +1,6 @@
 {
   "name": "@developjik1/icons",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "description": "SVG icon library for React",
   "main": "./dist/index.js",
