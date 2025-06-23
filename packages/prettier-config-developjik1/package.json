@@ -1,22 +1,22 @@
 {
     "name": "@developjik1/prettier-config-developjik1",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "private": false,
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
     "exports": {
-      ".": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.js"
-      }
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
     },
     "files": [
         "dist/**/*"
     ],
     "scripts": {
-      "build": "tsup index.ts --format cjs,esm --dts"
+        "build": "tsup index.ts --format cjs,esm --dts"
     },
     "devDependencies": {
         "prettier": "^3.5.3",
