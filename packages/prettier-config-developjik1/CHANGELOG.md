@@ -1,5 +1,11 @@
 # @developjik1/prettier-config-developjik1
 
+## 0.0.5
+
+### Patch Changes
+
+- 2d9e126: Prettier 설정 패키지 및 tsup 구성 파일 추가
+
 ## 0.0.4
 
 ### Patch Changes
