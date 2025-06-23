@@ -1,0 +1,241 @@
+# Icons 패키지 스토리북 배포
+name: Deploy Icons Storybook
+
+on:
+  workflow_dispatch: # 수동 실행 가능
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages-icons'
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Generate SVG components
+        run: |
+          cd packages/icons
+          pnpm run svgr
+
+      - name: Build Icons package
+        run: |
+          cd packages/icons
+          pnpm run build
+
+      - name: Build Icons Storybook
+        run: |
+          cd packages/icons
+          pnpm run build-storybook
+
+      - name: Create landing page
+        run: |
+          mkdir -p ./dist/icons
+          cp -r ./packages/icons/storybook-static/* ./dist/icons
+          
+          # 커스텀 랜딩 페이지 생성
+          cat > ./dist/landing.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="ko">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>@developjik/icons - Storybook</title>
+            <style>
+              body { 
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                margin: 0; 
+                padding: 40px; 
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                color: white;
+              }
+              .container { 
+                max-width: 800px; 
+                margin: 0 auto; 
+                text-align: center;
+              }
+              h1 { 
+                font-size: 3rem; 
+                margin-bottom: 20px; 
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+              }
+              .subtitle { 
+                font-size: 1.2rem; 
+                margin-bottom: 40px; 
+                opacity: 0.9;
+              }
+              .stats {
+                display: flex;
+                justify-content: center;
+                gap: 30px;
+                margin-bottom: 40px;
+                flex-wrap: wrap;
+              }
+              .stat {
+                background: rgba(255,255,255,0.1);
+                padding: 20px;
+                border-radius: 12px;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+              }
+              .stat-number {
+                font-size: 2rem;
+                font-weight: bold;
+                display: block;
+              }
+              .stat-label {
+                font-size: 0.9rem;
+                opacity: 0.8;
+              }
+              .cta-button {
+                display: inline-block;
+                padding: 16px 32px;
+                background: #ff4785;
+                color: white;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(255, 71, 133, 0.3);
+              }
+              .cta-button:hover {
+                background: #e7427d;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(255, 71, 133, 0.4);
+              }
+              .features {
+                margin-top: 60px;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+              }
+              .feature {
+                background: rgba(255,255,255,0.1);
+                padding: 24px;
+                border-radius: 12px;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+              }
+              .feature-icon {
+                font-size: 2rem;
+                margin-bottom: 12px;
+              }
+              .feature-title {
+                font-weight: 600;
+                margin-bottom: 8px;
+              }
+              .feature-desc {
+                opacity: 0.8;
+                font-size: 0.9rem;
+              }
+              .github-link {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(255,255,255,0.1);
+                padding: 12px;
+                border-radius: 50%;
+                color: white;
+                text-decoration: none;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+                transition: all 0.3s ease;
+              }
+              .github-link:hover {
+                background: rgba(255,255,255,0.2);
+                transform: scale(1.1);
+              }
+            </style>
+          </head>
+          <body>
+            <a href="https://github.com/developjik/packages" class="github-link" target="_blank">
+              📚
+            </a>
+            
+            <div class="container">
+              <h1>🎨 @developjik/icons</h1>
+              <p class="subtitle">SVGR로 만든 고품질 React 아이콘 라이브러리</p>
+              
+              <div class="stats">
+                <div class="stat">
+                  <span class="stat-number">136</span>
+                  <span class="stat-label">개의 아이콘</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-number">100%</span>
+                  <span class="stat-label">TypeScript</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-number">∞</span>
+                  <span class="stat-label">Color 변경</span>
+                </div>
+              </div>
+              
+              <a href="./icons/" class="cta-button">
+                📖 스토리북 탐험하기
+              </a>
+              
+              <div class="features">
+                <div class="feature">
+                  <div class="feature-icon">⚡</div>
+                  <div class="feature-title">자동 생성</div>
+                  <div class="feature-desc">SVG → React 컴포넌트 자동 변환</div>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">🎭</div>
+                  <div class="feature-title">동적 색상</div>
+                  <div class="feature-desc">currentColor로 CSS 색상 변경</div>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">📱</div>
+                  <div class="feature-title">반응형</div>
+                  <div class="feature-desc">width, height props 지원</div>
+                </div>
+                <div class="feature">
+                  <div class="feature-icon">🧪</div>
+                  <div class="feature-title">테스트 완료</div>
+                  <div class="feature-desc">모든 아이콘 자동 테스트</div>
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 

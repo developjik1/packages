@@ -1,0 +1,21 @@
+import * as React from 'react';
+import { SVGProps } from 'react';
+const StarIcon = (props: SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={20}
+      height={20}
+      viewBox="0 0 20 20"
+      fill="none"
+      role="img"
+      {...props}
+    >
+      <path
+        d="M4.85425 17.5L6.20842 11.6458L1.66675 7.70829L7.66675 7.18746L10.0001 1.66663L12.3334 7.18746L18.3334 7.70829L13.7917 11.6458L15.1459 17.5L10.0001 14.3958L4.85425 17.5Z"
+        fill="#FFBB0E"
+      />
+    </svg>
+  );
+};
+export default StarIcon;
