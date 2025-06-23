@@ -29,6 +29,6 @@
         "directory": "packages/prettier-config-developjik1"
     },
     "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
+       "registry": "https://npm.pkg.github.com"
     }
 }
