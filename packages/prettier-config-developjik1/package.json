@@ -1,6 +1,6 @@
 {
     "name": "@developjik1/prettier-config-developjik1",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "private": false,
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
@@ -29,6 +29,6 @@
         "directory": "packages/prettier-config-developjik1"
     },
     "publishConfig": {
-       "registry": "https://npm.pkg.github.com"
+        "registry": "https://npm.pkg.github.com"
     }
 }
