@@ -11,6 +11,10 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,7 +48,6 @@ jobs:
           commit: "chore(release): version packages"
           title: "chore(release): version packages"
         env:
-          # NPM_TOKEN은 npm registry에 배포하기 위한 토큰입니다.
-          # GitHub Repository Settings -> Secrets에서 NPM_TOKEN을 설정해야 합니다.
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # GitHub Package Registry를 사용하므로 GITHUB_TOKEN을 NPM_TOKEN으로 설정
+          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
