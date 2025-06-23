@@ -23,6 +23,11 @@
         "tsup": "^8.5.0",
         "typescript": "^5.8.3"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/developjik1/packages.git",
+        "directory": "packages/prettier-config-developjik1"
+      },
     "publishConfig": {
         "registry": "https://npm.pkg.github.com"
     }
