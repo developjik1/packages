@@ -18,8 +18,8 @@
   ],
   "scripts": {
     "build": "pnpm run clean && pnpm run svgr && tsup",
-    "svgr": "node ./svgr.config.cjs",
-    "clean": "rm -rf dist src/components",
+    "svgr": "npm run clean && node ./svgr.config.cjs",
+    "clean": "rm -rf dist src tests",
     "dev": "tsup --watch",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
