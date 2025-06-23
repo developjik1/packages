@@ -1,5 +1,5 @@
-# Icons 패키지 스토리북 배포
-name: Deploy Icons Storybook
+# 패키지 스토리북 배포
+name: Deploy Storybook
 
 on:
   workflow_dispatch: # 수동 실행 가능
@@ -31,8 +31,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Install dependencies
         run: pnpm install

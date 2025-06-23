@@ -1,5 +1,5 @@
 {
-  "name": "@developjik/icons",
+  "name": "@developjik1/icons",
   "version": "0.0.1",
   "private": false,
   "type": "module",
@@ -25,6 +25,11 @@
     "test": "vitest run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/developjik/packages.git",
+    "directory": "packages/icons"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
