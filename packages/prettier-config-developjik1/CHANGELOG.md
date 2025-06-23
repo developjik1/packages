@@ -1,5 +1,11 @@
 # @developjik1/prettier-config-developjik1
 
+## 0.0.3
+
+### Patch Changes
+
+- dd536da: .npmrc 파일 추가 및 GitHub Actions에서 NPM_TOKEN 설정 변경
+
 ## 0.0.2
 
 ### Patch Changes
